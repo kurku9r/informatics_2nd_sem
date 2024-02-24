@@ -9,8 +9,8 @@ struct figure{
     double lenght_side;
     double S;
     double P;
-    double x;
-    double y;
+    double *x=new double[count_side];
+    double *y=new double[count_side];
 };
 
 void delete_number(figure *number);
@@ -103,9 +103,9 @@ void input(figure *number){
     cout <<"¬ведите длину стороны\n";
     cin >>number[i].lenght_side;
     cout <<"¬ведите координату x\n";
-    cin >>number[i].x;
+    cin >>number[i].x[0];
     cout <<"¬ведите координату y\n";
-    cin >>number[i].y;
+    cin >>number[i].y[0];
 
     square(number,i);
     perimeter(number,i);
