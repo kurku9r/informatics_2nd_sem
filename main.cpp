@@ -13,11 +13,12 @@ struct figure{
     double y;
 };
 
+void delete_number(figure *number);
 void input(figure *number);
 void square(figure *number,int i);
 void perimeter(figure *number,int i);
 void output(figure *number);
-void realloc(figure *p_number,int size_arr);
+void realloc(figure *number,int size_arr);
 double get_max_S(figure *number,int size_arr);
 double get_max_P(figure *number,int size_arr);
 void clean();
@@ -31,21 +32,31 @@ int main()
 
     figure *p_number = new figure[size_arr];
 
+
+
     int num=0;
     do{
         cout<<"1-Ввод данных многоугольника"<<endl;
         cout<<"2-Вывод данных многоугольника"<<endl;
         cout<<"3-Вывод MAX_S и MAX_P"<<endl;
+        cout<<"4-Удаление записи о многоугольнике"<<endl;
         cout<<"0-Закончить работу"<<endl;
         cout << "Введите действие: ";
         cin>>num;
+        clean();
         if(num==1){
             clean();
             input(p_number);
+            clean();
         }
         else if(num==2){
             clean();
             output(p_number);
+            cout<<"Для возврашения в главное миню нажмите любую клавишу!"<<endl;
+            //добавить возврашение в меню при нажатии любой клавишы
+            cin.get();
+            cin.get();
+            clean();
         }else if(num==3){
             clean();
             int num_p;
@@ -53,19 +64,33 @@ int main()
             cout<<"2-Вывод максимального периметра многоугольника"<<endl;
             cout<<"3-Вернутся в меню"<<endl;
             cin>>num_p;
+            clean();
             if(num_p==1){
                 cout << "Максимальная площадь:" << get_max_S(p_number,size_arr)<<endl;
+                //добавить возврашение в меню при нажатии любой клавишы
+                cout<<"Для возврашения в главное миню нажмите любую клавишу!"<<endl;
+                cin.get();
+                cin.get();
+                clean();
             }else if(num_p==2){
                 cout << "Максимальный периметр:" << get_max_P(p_number,size_arr)<<endl;
+                //добавить возврашение в меню при нажатии любой клавишы
+                cout<<"Для возврашения в главное миню нажмите любую клавишу!"<<endl;
+                cin.get();
+                cin.get();
+                clean();
             }
             else{
                 clean();
             }
+        }else if(num==4){
+            delete_number(p_number);
+            clean();
         }
     }while(num!=0);
     cout << "Работа завершена!"<<endl;
 
-
+    delete[] p_number;
     return 0;
 }
 void input(figure *number){
@@ -110,37 +135,62 @@ void output(figure *number){
 void perimeter(figure *number,int i){
     number[i].P=number[i].lenght_side*number[i].count_side;
 }
-void realloc(figure *p_number,int size_arr){
+void realloc(figure *number,int size_arr){
     figure *p_number_new = new figure[size_arr+1];
-    cout <<"pn0: " << p_number[0].S;
+    cout <<"pn0: " << number[0].S;
     for(int i=0;i<size_arr-1;i++){
-        p_number_new[i]=p_number[i];
+        p_number_new[i]=number[i];
     }
-    delete[] p_number;
-    p_number=p_number_new;
+    delete[] number;
+    number=p_number_new;
     delete[] p_number_new;
-    p_number[1].S=12;
-    cout <<"pn1: " << p_number[1].S;
+    number[1].S=12;
+    cout <<"pn1: " << number[1].S;
 }
 
 double get_max_S(figure *number,int size_arr){
-    int i=0;
+    int i=0,j=0;
+    double *max_number_S=new double[size_arr];
     double max_S=number[i].S;
     for(int i=0;i<size_arr;i++){
         if(number[i].S>max_S){
             max_S=number[i].S;
         }
     }
+    for(int i=0;i<size_arr;i++){
+        if(number[i].S==max_S){
+            max_number_S[j]=i+1;
+            j++;
+        }
+    }
+    cout <<"Многоугольники с максимальной площадью: ";
+    for(int k=0;k<j;k++){
+        cout << max_number_S[k]<<"\t";
+    }
+    cout << endl;
     return max_S;
 }
 double get_max_P(figure *number,int size_arr){
-    int i=0;
+    int i=0,j=0;
+    double *max_number_P=new double[size_arr];
+
     double max_P=number[i].P;
     for(int i=0;i<size_arr;i++){
         if(number[i].P>max_P){
             max_P=number[i].P;
         }
     }
+    for(int i=0;i<size_arr;i++){
+        if(number[i].P==max_P){
+            max_number_P[j]=i+1;
+            j++;
+        }
+    }
+    cout <<"Многоугольники с максимальным периметром: ";
+    for(int k=0;k<j;k++){
+        cout << max_number_P[k]<<"\t";
+    }
+    cout << endl;
     return max_P;
 }
 void clean(){
@@ -149,5 +199,18 @@ void clean(){
         cout<<endl;
         i++;
     }
+    return;
+}
+void delete_number(figure *number){
+    int i;
+    cout << "Данные какого многоугольника удалить?"<<endl;
+            cin>>i;
+            i--;
+    number[i].count_side=0;
+    number[i].lenght_side=0;
+    number[i].x=0;
+    number[i].y=0;
+    number[i].S=0;
+    number[i].P=0;
     return;
 }
