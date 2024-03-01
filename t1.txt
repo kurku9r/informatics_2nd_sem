@@ -137,23 +137,13 @@ void output(figure *number){
 
     coord_figure(number, i);
     cout << "Координаты вершин"<< endl;
-    cout <<"\t";
-    for(int j=1;j<number[i].count_side+1;j++){
-       cout << j << "\t";
+
+    for(int j=0;j<number[i].count_side;j++){
+        cout <<"x["<<j+1<<"]"<< number[i].x[j]<< "\t";
+        cout <<"y["<<j+1<<"]"<< number[i].y[j]<< "\n";
     }
     cout << endl;
 
-    cout << "x:      ";
-    for(int j=0;j<number[i].count_side;j++){
-       cout << number[i].x[j]<< "\t";
-    }
-    cout << endl;
-
-    cout << "y:      ";
-    for(int j=0;j<number[i].count_side;j++){
-       cout << number[i].y[j]<< "\t";
-    }
-    cout << endl;
 
     cout << "Площадь S: " << number[i].S << endl;
     cout << "Периметр P: " << number[i].P << endl;
@@ -172,9 +162,7 @@ void realloc(figure *&number,int &size_arr){
     size_arr=newSize;
     delete[] number;
     number=p_number_new;
-   // delete[] p_number_new;   //!!!ПРОБЛЕМА!!!
-
-
+    delete[] p_number_new;   // !!!ПРОБЛЕМА!!!
 
     return;
 }
