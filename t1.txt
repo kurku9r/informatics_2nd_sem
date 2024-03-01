@@ -13,12 +13,12 @@ struct figure{
     double *y=new double[count_side];
 };
 
-void delete_number(figure *number);
+void delete_number(figure *number,int size_arr);
 void input(figure *number);
 void square(figure *number,int i);
 void perimeter(figure *number,int i);
 void output(figure *number);
-void realloc(figure *number,int size_arr);
+void realloc(figure *&number,int &size_arr);
 double get_max_S(figure *number,int size_arr);
 double get_max_P(figure *number,int size_arr);
 void clean();
@@ -86,7 +86,7 @@ int main()
                 clean();
             }
         }else if(num==4){
-            delete_number(p_number);
+            delete_number(p_number,size_arr);
             clean();
         }else if(num==5){
             realloc(p_number,size_arr);
@@ -161,16 +161,22 @@ void output(figure *number){
 void perimeter(figure *number, int i){
     number[i].P=number[i].lenght_side*number[i].count_side;
 }
-void realloc(figure *number,int size_arr){
-    figure *p_number_new = new figure[size_arr+1];
+void realloc(figure *&number,int &size_arr){
+    int newSize = size_arr + 1;
+    figure *p_number_new = new figure[newSize];
 
-    for(int i=0;i<size_arr;i++){
+ //   std::copy(number, number + size_arr, p_number_new);
+   for(int i=0;i<size_arr;i++){
         p_number_new[i]=number[i];
     }
+    size_arr=newSize;
     delete[] number;
     number=p_number_new;
-    delete[] p_number_new;
+   // delete[] p_number_new;   //!!!ПРОБЛЕМА!!!
 
+
+
+    return;
 }
 
 double get_max_S(figure *number,int size_arr){
@@ -226,17 +232,24 @@ void clean(){
     }
     return;
 }
-void delete_number(figure *number){
+void delete_number(figure *number,int size_arr){
     int i;
     cout << "Данные какого многоугольника удалить?"<<endl;
             cin>>i;
             i--;
-    number[i].count_side=0;
-    number[i].lenght_side=0;
-    number[i].x[0]=0;
-    number[i].y[0]=0;
-    number[i].S=0;
-    number[i].P=0;
+
+
+    for(int j=i;j<size_arr-1;j++){
+        number[i]=number[i+1];
+    }
+
+    number[size_arr-1].count_side=0;
+    number[size_arr-1].lenght_side=0;
+    number[size_arr-1].x[0]=0;
+    number[size_arr-1].y[0]=0;
+    number[size_arr-1].S=0;
+    number[size_arr-1].P=0;
+
     return;
 }
 void coord_figure(figure *number,int i){
