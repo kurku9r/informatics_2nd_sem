@@ -1,0 +1,315 @@
+#include <iostream>
+#include <math.h>
+
+
+using namespace std;
+
+
+struct figure{
+    int count_side;
+    double lenght_side;
+    double S;
+    double P;
+    double x;
+    double y;
+};
+
+void delete_number(figure *number,int size_arr);
+void input(figure *number,int size_arr);
+void square(figure *number,int i);
+void perimeter(figure *number,int i);
+void output(figure *number);
+void realloc(figure *&number,int &size_arr);
+double get_max_S(figure *number,int size_arr);
+double get_max_P(figure *number,int size_arr);
+void clean();
+void coord_figure(figure *number,int i);
+double find_max_element(figure *number,int size_arr,int type);
+
+int main()
+{
+    setlocale(LC_CTYPE,"");
+    int size_arr,i;
+
+    int check=1;
+    do{
+        cout << "Сколько многугольников существует?"<<endl;
+        cin >> size_arr;
+        if(size_arr>0){
+            check=0;
+        }else{
+            cout <<"!!!Некорректный ввод повторите попытку!!!"<<endl;
+        }
+    }while(check!=0);
+
+    figure *p_number = new figure[size_arr];
+
+    //cout << sizeof(p_number);
+
+    int num=0;
+    do{
+        cout<<"1-Ввод данных многоугольника"<<endl;
+        cout<<"2-Вывод данных многоугольника"<<endl;
+        cout<<"3-Вывод MAX_S и MAX_P"<<endl;
+        cout<<"4-Удаление записи о многоугольнике"<<endl;
+        cout<<"5-Добавить ячейку для нового многоугольника"<<endl;
+        cout<<"0-Закончить работу"<<endl;
+        cout << "Введите действие: ";
+        cin>>num;
+        clean();
+        if(num==1){
+            clean();
+            input(p_number,size_arr);
+            clean();
+        }
+        else if(num==2){
+            clean();
+            output(p_number);
+            cout<<"Для возврашения в главное миню нажмите любую клавишу!"<<endl;
+            //добавить возврашение в меню при нажатии любой клавишы
+            cin.get();
+            cin.get();
+            clean();
+        }else if(num==3){
+            clean();
+            int num_p;
+            cout<<"1-Вывод максимальной площади многоугольника"<<endl;
+            cout<<"2-Вывод максимального периметра многоугольника"<<endl;
+            cout<<"3-Вернутся в меню"<<endl;
+            cin>>num_p;
+            clean();
+            if(num_p==1){
+                cout << "Максимальная площадь:" << find_max_element(p_number,size_arr,1)<<endl;
+                //добавить возврашение в меню при нажатии любой клавишы
+                cout<<"Для возврашения в главное миню нажмите любую клавишу!"<<endl;
+                cin.get();
+                cin.get();
+                clean();
+            }else if(num_p==2){
+                cout << "Максимальный периметр:" << find_max_element(p_number,size_arr,2)<<endl;
+                //добавить возврашение в меню при нажатии любой клавишы
+                cout<<"Для возврашения в главное миню нажмите любую клавишу!"<<endl;
+                cin.get();
+                cin.get();
+                clean();
+            }
+            else{
+                clean();
+            }
+        }else if(num==4){
+            delete_number(p_number,size_arr);
+            clean();
+        }else if(num==5){
+            realloc(p_number,size_arr);
+        }
+    }while(num!=0);
+    cout << "Работа завершена!"<<endl;
+
+    delete[] p_number;
+    return 0;
+}
+void input(figure *number,int size_arr){
+    int i;
+    int check=1;
+    do{
+
+        cout << "Данные какого многоугольника вводить?"<<endl;
+        cin >> i;
+        if((i<=size_arr)&&(i>0)){
+            check=0;
+        }else{
+            cout <<"!!!Некорректный ввод повторите попытку!!!"<<endl;
+        }
+    }while(check!=0);
+
+    i--;
+    check=1;
+
+    do{
+        cout <<"Введите количество сторон\n";
+        cin >>number[i].count_side;
+        if((number[i].count_side>=3)){
+            check=0;
+        }else{
+            cout <<"!!!Некорректный ввод повторите попытку!!!"<<endl;
+        }
+    }while(check!=0);
+
+    check=1;
+
+    do{
+        cout <<"Введите длину стороны\n";
+        cin >>number[i].lenght_side;
+        if((number[i].lenght_side>=0)){
+            check=0;
+        }else{
+            cout <<"!!!Некорректный ввод повторите попытку!!!"<<endl;
+        }
+    }while(check!=0);
+
+    check=1;
+
+    do{
+        cout <<"Введите координату x\n";
+        cin >>number[i].x;
+        cout <<"Введите координату y\n";
+        cin >>number[i].y;
+        double R=number[i].lenght_side/(2*sin(M_PI/number[i].count_side));
+        double pR=sqrt(number[i].x*number[i].x+number[i].y*number[i].y);
+        if(R<pR){
+            check=0;
+        }else{
+            cout <<"!!!Введены координаты не самой удаленной точки,повторите ввод!!!"<<endl;
+        }
+    }while(check!=0);
+
+    square(number,i);
+    perimeter(number,i);
+
+}
+void square(figure *number,int i){
+    if(number[i].count_side==3){
+        number[i].S=(number[i].lenght_side*number[i].lenght_side)*sqrt(3)/2;
+    }
+    else if(number[i].count_side==4){
+        number[i].S=(number[i].lenght_side*number[i].lenght_side);
+    }
+    else{
+       number[i].S=(number[i].count_side*(number[i].lenght_side*number[i].lenght_side))/(4*tan(M_PI/number[i].count_side));
+    }
+}
+void output(figure *number){
+    int i;
+    cout << "Данные какого многоугольника выводить?"<<endl;
+    cin >> i;
+    i--;
+    cout << "Многоугольник: " << i+1 << endl;
+    cout << "Количество вершин: " << number[i].count_side << endl;
+
+
+    cout << "Координаты вершин"<< endl;
+
+    coord_figure(number, i);
+
+
+    cout << "Площадь S: " << number[i].S << endl;
+    cout << "Периметр P: " << number[i].P << endl;
+}
+void perimeter(figure *number, int i){
+    number[i].P=number[i].lenght_side*number[i].count_side;
+}
+void realloc(figure *&number,int &size_arr){
+    int newSize = size_arr + 1;
+    figure *p_number_new = new figure[newSize];
+
+    for(int i=0;i<size_arr;i++){
+        p_number_new[i]=number[i];
+    }
+    size_arr=newSize;
+    delete[] number;
+    number=p_number_new;
+
+}
+
+double find_max_element(figure *number,int size_arr,int type){
+    int i=0,j=0;
+    double* arr=new double[size_arr];
+    if(type==1){
+        for(int l=0;l<size_arr;l++){
+            arr[l]=number[l].S;
+        }
+    }else{
+        for(int l=0;l<size_arr;l++){
+            arr[l]=number[l].P;
+        }
+    }
+    double *max_number=new double[size_arr];
+    double max1=arr[i];
+    for(int i=0;i<size_arr;i++){
+        if(arr[i]>max1){
+            max1=arr[i];
+        }
+    }
+    for(int i=0;i<size_arr;i++){
+        if(arr[i]==max1){
+            max_number[j]=i+1;
+            j++;
+        }
+    }
+    char* name;
+    char sqr[]="площадью";
+    char prt[]="периметром";
+    if(type==1){
+        name=sqr;
+    }else{
+        name=prt;
+    }
+    cout <<"Многоугольники с макс. "<< name<<":"<<endl;
+    for(int k=0;k<j;k++){
+        cout << max_number[k]<<"\t";
+    }
+    cout << endl;
+    return max1;
+}
+
+void clean(){
+    int i=0;
+    while(i<100){
+        cout<<endl;
+        i++;
+    }
+}
+void delete_number(figure *number,int size_arr){
+    int i;
+    cout << "Данные какого многоугольника удалить?"<<endl;
+            cin>>i;
+            i--;
+
+
+    for(int j=i;j<size_arr-1;j++){
+        number[i]=number[i+1];
+    }
+
+    number[size_arr-1].count_side=0;
+    number[size_arr-1].lenght_side=0;
+    number[size_arr-1].x=0;
+    number[size_arr-1].y=0;
+    number[size_arr-1].S=0;
+    number[size_arr-1].P=0;
+
+/*    int newSize = size_arr - 1;
+    figure *p_number_new = new figure[newSize];
+
+    for(int i=0;i<size_arr-1;i++){
+        p_number_new[i]=number[i];
+    }
+    size_arr=newSize;
+    delete[] number;
+    number=p_number_new;*/
+
+}
+void coord_figure(figure *number,int i){
+
+    double R=number[i].lenght_side/(2*sin(M_PI/number[i].count_side));
+    double k=atan2(number[i].x,number[i].y);
+    double xc=number[i].x-R*cos(k);
+    double yc=number[i].y-R*sin(k);
+
+    double* x=new double[number[i].count_side];
+    double* y=new double[number[i].count_side];
+
+    x[0]=number[i].x;
+    y[0]=number[i].y;
+
+    for(int j=1;j<number[i].count_side;j++){
+       double angle= 2*M_PI*j/number[i].count_side;
+       x[j]=xc+R*cos(k+angle);
+       y[j]=yc+R*sin(k+angle);
+    }
+    for(int j=0;j<number[i].count_side;j++){
+        cout <<"x["<<j+1<<"]"<< x[j]<< "\t";
+        cout <<"y["<<j+1<<"]"<< y[j]<< "\n";
+    }
+    cout << endl;
+}
+
